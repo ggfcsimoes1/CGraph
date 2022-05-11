@@ -5,7 +5,7 @@ Since the repo is currently private, cloning it doesn't follow the usual formula
 
 1. Open the shell in the directory where the project will reside (``` cd etc/etc/etc ```)
 2. Head over to https://github.com/settings/tokens/new and create a personal access token with a length of 90 days.
-3. Insert the command: ```git clone https://USERNAME:TOKEN@github.com/ggfcsimoes1/RC-Centralized-Messaging.git```
+3. Insert the command: ```git clone https://USERNAME:TOKEN@github.com/ggfcsimoes1/CGraph.git```
 4. The repo is now cloned!
 
 
@@ -31,7 +31,7 @@ Everytime a change is made to the repo, when you are done, you should commit the
 
 * **README commit example:**
 
-1. ```cd Desktop/RC/Projeto/RCProjeto```
+1. ```cd Desktop/CG/Projeto/CGProjeto```
 2. I am writing this message on my editor!
 3. ```git add README.md```
 4. ```git commit -m "Completed README.md!"```
