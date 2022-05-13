@@ -6,19 +6,47 @@ var geometry, material, mesh;
 
 var box;
 
-function createBox(x, y, z) {
+var colors = [0x0000FF,0x00FFFF,0xFF00FF,0xFFFF00, 0x00FF00];
+
+
+function createBoxes( x, y, z, size ) {
     'use strict';
 
-    box = new THREE.Object3D();
+    const group = new THREE.Group();
+    
 
-    material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
-    geometry = new THREE.BoxGeometry(300, 50, 100);
-    mesh = new THREE.Mesh(geometry, material);
+    for( var i = 0; i < 5; i++ ){
+        var xAux = x, yAux = y;
 
-    box.add(mesh);
-    box.position.set(x, y, z);
+        material = new THREE.MeshBasicMaterial({ color: colors[i], wireframe: false });
+        box = new THREE.Object3D();
+        geometry = new THREE.BoxGeometry( size, size, size );
+        mesh = new THREE.Mesh( geometry, material );
 
-    scene.add(box);
+        switch(i){
+            case 0:
+                xAux = x+(size+10);
+                break;
+            case 1:
+                yAux = y+(size+10);
+                break;
+            case 2:
+                break;
+            case 3:
+                yAux = y-(size+10)
+                break;
+            case 4:
+                xAux = x-(size+10);
+                break;
+        }
+        
+        box.position.set( xAux, yAux, z );
+        box.add(mesh);
+        group.add(box);
+    }
+    scene.add(group);
+    group.rotation.set(-10,-10,0);
+
 }
 
 function createScene() {
@@ -26,8 +54,7 @@ function createScene() {
 
     scene = new THREE.Scene();
 
-    createBox(0, 0, 0);
-    createBox(10,20,30);
+    createBoxes(0, 0, 0, 100);
 }
 
 function createCamera() {
@@ -37,7 +64,7 @@ function createCamera() {
                                             window.innerHeight / 2, 
                                             window.innerHeight / - 2, 
                                             1, 
-                                            1000 );
+                                            10000 );
     camera.position.x = 0;
     camera.position.y = 0;
     camera.position.z = 1000;
@@ -118,6 +145,7 @@ function render() {
 function init() {
     'use strict';
     renderer = new THREE.WebGLRenderer({
+        logarithmicDepthBuffer: true,
         antialias: true
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -133,6 +161,6 @@ function init() {
 }
 
 function animate() {
-    requestAnimationFrame( animate );
+    requestAnimationFrame( animate );    
     renderer.render(scene, camera);
 } animate();
