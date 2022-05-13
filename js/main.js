@@ -40,7 +40,7 @@ function createCamera() {
                                             1000 );
     camera.position.x = 0;
     camera.position.y = 0;
-    camera.position.z = 100;
+    camera.position.z = 1000;
     camera.lookAt(scene.position);
 }
 
@@ -48,15 +48,15 @@ function changePerspective(view){
     'use strict';
     switch(view){
         case "front":
-            camera.position.set(0,0,100);
+            camera.position.set(0,0,1000);
             camera.lookAt(scene.position);
             break;
         case "top":
-            camera.position.set(0,100,0);
+            camera.position.set(0,1000,0);
             camera.lookAt(scene.position);
             break;
         case "side":
-            camera.position.set(100,0,0);
+            camera.position.set(1000,0,0);
             camera.lookAt(scene.position);
             break;
     }
