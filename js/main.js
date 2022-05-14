@@ -1,6 +1,8 @@
 /*global THREE, requestAnimationFrame, console*/
 
-var camera, scene, renderer, currentCamera=camera;
+var cameras = [];
+
+var scene, renderer, currentCamera;
 
 var geometry, material, mesh;
 
@@ -41,7 +43,7 @@ function createBoxes( x, y, z, size ) {
         }
         
         box.position.set( xAux, yAux, z );
-        box.add(mesh);
+        box.add( mesh );
         group.add(box);
     }
     scene.add(group);
@@ -49,42 +51,70 @@ function createBoxes( x, y, z, size ) {
 
 }
 
+function createCones( x, y, z, radius, height, segs ) {
+    
+    material = new THREE.MeshBasicMaterial( {color: colors[1], wireframe: false} );
+    cone = new THREE.Object3D();
+    geometry = new THREE.ConeGeometry( radius, height, segs );
+    mesh = new THREE.Mesh( geometry, material );
+    cone.add ( mesh );
+    cone.position.set( x, y, z );
+    cone.rotation.set( 3, 1 , 0.25 );
+    scene.add( cone );
+}
+
 function createScene() {
     'use strict';
 
     scene = new THREE.Scene();
-
-    createBoxes(0, 0, 0, 100);
+    
+    createBoxes( -400, -300, 0, 50 );
+    createCones( 100, 100, 0, 50, 250, 30 );
 }
 
 function createCamera() {
     'use strict';
-    camera = new THREE.OrthographicCamera(  window.innerWidth / - 2, 
-                                            window.innerWidth / 2, 
-                                            window.innerHeight / 2, 
-                                            window.innerHeight / - 2, 
-                                            1, 
-                                            10000 );
-    camera.position.x = 0;
-    camera.position.y = 0;
-    camera.position.z = 1000;
-    camera.lookAt(scene.position);
+
+    for ( var i = 0; i < 3; i++ ) {
+        var camera = new THREE.OrthographicCamera(  window.innerWidth / - 2, 
+                                                    window.innerWidth / 2, 
+                                                    window.innerHeight / 2, 
+                                                    window.innerHeight / - 2, 
+                                                    1, 
+                                                    10000 );
+        
+        switch( i ){
+            case 0:
+                camera.position.set( 0, 0, 1000 );
+                break;
+            case 1:
+                camera.position.set( 0, 1000, 0 );
+                break;
+            case 2: 
+                camera.position.set( 1000, 0, 0);
+                break;
+        }
+        camera.lookAt( scene.position );
+        cameras.push( camera );
+        currentCamera = cameras[0];
+    }
+    
 }
 
 function changePerspective(view){
     'use strict';
     switch(view){
         case "front":
-            camera.position.set(0,0,1000);
-            camera.lookAt(scene.position);
+            currentCamera = cameras[0];
+            currentCamera.lookAt(scene.position);
             break;
         case "top":
-            camera.position.set(0,1000,0);
-            camera.lookAt(scene.position);
+            currentCamera = cameras[1];
+            currentCamera.lookAt(scene.position);
             break;
         case "side":
-            camera.position.set(1000,0,0);
-            camera.lookAt(scene.position);
+            currentCamera = cameras[2];
+            currentCamera.lookAt(scene.position);
             break;
     }
 
@@ -105,11 +135,11 @@ function onResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     if (window.innerHeight > 0 && window.innerWidth > 0) {
-        camera.left = window.innerWidth / -2;
-        camera.right = window.innerWidth / 2;
-        camera.top = window.innerHeight / 2;
-        camera.bottom = window.innerHeight / -2;
-        camera.updateProjectionMatrix();
+        currentCamera.left = window.innerWidth / -2;
+        currentCamera.right = window.innerWidth / 2;
+        currentCamera.top = window.innerHeight / 2;
+        currentCamera.bottom = window.innerHeight / -2;
+        currentCamera.updateProjectionMatrix();
     }
 
 }
@@ -162,5 +192,5 @@ function init() {
 
 function animate() {
     requestAnimationFrame( animate );    
-    renderer.render(scene, camera);
+    renderer.render(scene, currentCamera);
 } animate();
