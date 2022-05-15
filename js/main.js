@@ -53,14 +53,35 @@ function createBoxes( x, y, z, size ) {
 
 function createCones( x, y, z, radius, height, segs ) {
     
-    material = new THREE.MeshBasicMaterial( {color: colors[1], wireframe: false} );
-    cone = new THREE.Object3D();
-    geometry = new THREE.ConeGeometry( radius, height, segs );
-    mesh = new THREE.Mesh( geometry, material );
-    cone.add ( mesh );
-    cone.position.set( x, y, z );
-    cone.rotation.set( 3, 1 , 0.25 );
-    scene.add( cone );
+    const group = new THREE.Group ( );
+
+    const coneMaterial = new THREE.MeshBasicMaterial ( {color: colors[0], wireframe: false} );
+    const sphereMaterial = new THREE.MeshBasicMaterial ( {color: colors[1], wireframe: false} );
+    const pyramidMaterial = new THREE.MeshBasicMaterial ( {color: colors[2], wireframe: false} );
+
+    pyramid = new THREE.Object3D ( );
+    pyramidGeo = new THREE.ConeGeometry ( radius/2, height/4, 4 );
+    pyramidMesh = new THREE.Mesh ( pyramidGeo, pyramidMaterial );
+    pyramid.position.set ( 0, 125, 0 );
+    pyramid.add ( pyramidMesh );
+    group.add ( pyramid );
+   
+    cone = new THREE.Object3D ( );
+    coneGeo = new THREE.ConeGeometry ( radius, height, segs );
+    coneMesh = new THREE.Mesh ( coneGeo, coneMaterial );
+    cone.add ( coneMesh );
+    group.add ( cone );
+    
+    sphere = new THREE.Object3D ( );
+    sphereGeo = new THREE.SphereGeometry ( radius, segs, segs );
+    sphereMesh = new THREE.Mesh ( sphereGeo, sphereMaterial );
+    sphere.position.set ( 0, -(height-30), 0 );
+    sphere.add ( sphereMesh );
+    group.add ( sphere );
+
+    group.position.set ( x, y, z );
+    group.rotation.set ( 3.8, 0.40 , 0.35 );
+    scene.add ( group );
 }
 
 function createScene() {
@@ -69,7 +90,7 @@ function createScene() {
     scene = new THREE.Scene();
     
     createBoxes( -400, -300, 0, 50 );
-    createCones( 100, 100, 0, 50, 250, 30 );
+    createCones( 100, 100, 0, 35, 200, 30 );
 }
 
 function createCamera() {
