@@ -6,7 +6,7 @@ var scene, renderer, currentCamera;
 
 var geometry, material, mesh;
 
-var box;
+var box, pyramid, cone, sphere, torus;
 
 var colors = [0x0000FF,0x00FFFF,0xFF00FF,0xFFFF00, 0x00FF00];
 
@@ -16,9 +16,10 @@ function createBoxes( x, y, z, size ) {
 
     const group = new THREE.Group();
     
+    const sphereMaterial = new THREE.MeshBasicMaterial ( {color: colors[1], wireframe: false} );
 
     for( var i = 0; i < 5; i++ ){
-        var xAux = x, yAux = y;
+        var xAux = 0, yAux = 0;
 
         material = new THREE.MeshBasicMaterial({ color: colors[i], wireframe: false });
         box = new THREE.Object3D();
@@ -27,31 +28,44 @@ function createBoxes( x, y, z, size ) {
 
         switch(i){
             case 0:
-                xAux = x+(size+10);
+                xAux = (size+10);
                 break;
             case 1:
-                yAux = y+(size+10);
+                yAux = -(size+10);
                 break;
             case 2:
                 break;
             case 3:
-                yAux = y-(size+10)
+                yAux = (size+10)
                 break;
             case 4:
-                xAux = x-(size+10);
+                xAux = -(size+10);
                 break;
         }
         
-        box.position.set( xAux, yAux, z );
+        box.position.set( xAux, yAux, 0 );
         box.add( mesh );
         group.add(box);
     }
-    scene.add(group);
-    group.rotation.set(-10,-10,0);
 
+    sphere = new THREE.Object3D ( );
+    geometry = new THREE.SphereGeometry ( size/4, 20, 7 );
+    mesh = new THREE.Mesh ( geometry, sphereMaterial );
+    sphere.position.set ( -(size*3/2 + 10), -size/2, size/2 );
+    sphere.add ( mesh );
+    group.add ( sphere );
+
+    group.position.set ( x, y, z );
+    //group.rotation.set(-10,-10,0);
+
+    const axesHelper = new THREE.AxesHelper( 100 );
+
+    group.add( axesHelper );
+    scene.add(group);
 }
 
 function createCones( x, y, z, radius, height, segs ) {
+    'use strict';
     
     const group = new THREE.Group ( );
 
@@ -60,27 +74,131 @@ function createCones( x, y, z, radius, height, segs ) {
     const pyramidMaterial = new THREE.MeshBasicMaterial ( {color: colors[2], wireframe: false} );
 
     pyramid = new THREE.Object3D ( );
-    pyramidGeo = new THREE.ConeGeometry ( radius/2, height/4, 4 );
-    pyramidMesh = new THREE.Mesh ( pyramidGeo, pyramidMaterial );
+    geometry = new THREE.ConeGeometry ( radius/2, height/4, 4 );
+    mesh = new THREE.Mesh ( geometry, pyramidMaterial );
     pyramid.position.set ( 0, 125, 0 );
-    pyramid.add ( pyramidMesh );
+    pyramid.add ( mesh );
     group.add ( pyramid );
    
     cone = new THREE.Object3D ( );
-    coneGeo = new THREE.ConeGeometry ( radius, height, segs );
-    coneMesh = new THREE.Mesh ( coneGeo, coneMaterial );
-    cone.add ( coneMesh );
+    geometry = new THREE.ConeGeometry ( radius, height, segs );
+    mesh = new THREE.Mesh ( geometry, coneMaterial );
+    cone.add ( mesh );
     group.add ( cone );
     
     sphere = new THREE.Object3D ( );
-    sphereGeo = new THREE.SphereGeometry ( radius, segs, segs );
-    sphereMesh = new THREE.Mesh ( sphereGeo, sphereMaterial );
+    geometry = new THREE.SphereGeometry ( radius, segs, segs );
+    mesh = new THREE.Mesh ( geometry, sphereMaterial );
     sphere.position.set ( 0, -(height-30), 0 );
-    sphere.add ( sphereMesh );
+    sphere.add ( mesh );
     group.add ( sphere );
 
     group.position.set ( x, y, z );
-    group.rotation.set ( 3.8, 0.40 , 0.35 );
+    //group.rotation.set ( 3.8, 0.40 , 0.35 );
+
+    const axesHelper = new THREE.AxesHelper( 100 );
+    
+    group.add( axesHelper );
+    scene.add ( group );
+}
+
+function createSphere(x, y, z, radius, segs ) {
+    'use strict';
+
+    const group = new THREE.Group ( );
+
+    const sphereMaterial = new THREE.MeshBasicMaterial ( {color: colors[3], wireframe: false} );
+    const rectangleMaterial = new THREE.MeshBasicMaterial ( {color: colors[1], wireframe: false} );
+    const pyramid1Material = new THREE.MeshBasicMaterial ( {color: colors[2], wireframe: false} );
+    const pyramid2Material = new THREE.MeshBasicMaterial ( {color: colors[2], wireframe: false} );
+
+    sphere = new THREE.Object3D ( );
+    geometry = new THREE.SphereGeometry ( radius, segs, segs );
+    mesh = new THREE.Mesh ( geometry, sphereMaterial );
+    sphere.position.set ( 0, 0, 0 );
+    sphere.add ( mesh );
+    group.add ( sphere );
+
+    box = new THREE.Object3D();
+    geometry = new THREE.BoxGeometry( 3/2 * radius, 3.5 * radius, 20);
+    mesh = new THREE.Mesh( geometry, rectangleMaterial);
+    box.position.set(0, 0, 0);
+    box.rotation.set(0.5, 0, 0);
+    box.add( mesh );
+    group.add( box );
+
+    pyramid = new THREE.Object3D ( );
+    geometry = new THREE.ConeGeometry ( radius/3, radius/2, 4 );
+    mesh = new THREE.Mesh ( geometry, pyramid1Material );
+    pyramid.position.set ( 100, 0, 0 );
+    pyramid.add ( mesh );
+    group.add ( pyramid );
+
+    pyramid = new THREE.Object3D ( );
+    geometry = new THREE.ConeGeometry ( radius/3, -radius/2, 4 );
+    mesh = new THREE.Mesh ( geometry, pyramid2Material );
+    pyramid.position.set ( -100, 0, 0 );
+    pyramid.add ( mesh );
+    group.add ( pyramid );
+
+    group.position.set ( x, y, z );
+    //group.rotation.set ( 3.8, 0.40 , 0.35 );
+
+    const axesHelper = new THREE.AxesHelper( 100 );
+    
+    group.add( axesHelper );
+    scene.add ( group );
+}
+
+function createPyramid(x, y, z, radius, segs, height) {
+    'use strict';
+
+    const group = new THREE.Group ( );
+
+    const torus1Material = new THREE.MeshBasicMaterial ( {color: colors[3], wireframe: false} );
+    const torus2Material = new THREE.MeshBasicMaterial ( {color: colors[0], wireframe: false} );
+    const rectangleMaterial = new THREE.MeshBasicMaterial ( {color: colors[1], wireframe: false} );
+    const pyramidMaterial = new THREE.MeshBasicMaterial ( {color: colors[2], wireframe: false} );
+
+    pyramid = new THREE.Object3D ( );
+    geometry = new THREE.ConeGeometry ( height/13, height, 4 );
+    mesh = new THREE.Mesh ( geometry, pyramidMaterial );
+    pyramid.position.set ( 0, 0, 0 );
+    pyramid.rotation.set( Math.PI/4, 0, -Math.PI/2 );
+    pyramid.add ( mesh );
+    group.add ( pyramid );
+
+    torus = new THREE.Object3D ( );
+    geometry = new THREE.TorusGeometry ( radius*1.5, radius/5, segs, segs );
+    mesh = new THREE.Mesh ( geometry, torus1Material );
+    torus.position.set ( 40, 0, 0 );
+    torus.rotation.set( 0, -Math.PI/2, 0);
+    torus.add ( mesh );
+    group.add ( torus );
+
+    torus = new THREE.Object3D ( );
+    geometry = new THREE.TorusGeometry ( radius, radius/5, segs, segs );
+    mesh = new THREE.Mesh ( geometry, torus2Material );
+    torus.position.set ( 110, 0, 0 );
+    torus.rotation.set( 0, -Math.PI/2, 0);
+    torus.add ( mesh );
+    group.add ( torus );
+
+    box = new THREE.Object3D();
+    geometry = new THREE.BoxGeometry( height/15, height/15, height/15);
+    mesh = new THREE.Mesh( geometry, rectangleMaterial);
+    box.position.set(-height/2, height/13 , 0);
+    box.rotation.set(0 , 0, Math.PI/4);
+    box.add( mesh );
+    group.add( box );
+
+
+    group.position.set ( x, y, z );
+    //group.rotation.set ( 3.8, 0.40 , 0.35 );
+
+    const axesHelper = new THREE.AxesHelper( 100 );
+    
+    group.add( axesHelper );
     scene.add ( group );
 }
 
@@ -89,8 +207,11 @@ function createScene() {
 
     scene = new THREE.Scene();
     
-    createBoxes( -400, -300, 0, 50 );
-    createCones( 100, 100, 0, 35, 200, 30 );
+    createBoxes( 300, 300, 0, 50 );
+    createCones( 100, 100, 0, 35, 200, 20 );
+    createSphere(-200, 80, 0, 50, 20);
+    createPyramid(-300, -250, 100, 50, 30, 450);
+
 }
 
 function createCamera() {
@@ -205,6 +326,9 @@ function init() {
     createScene();
     createCamera();
 
+    const axesHelper = new THREE.AxesHelper( 200 );
+    scene.add( axesHelper );
+
     render();
 
     window.addEventListener("keydown", onKeyDown);
@@ -214,4 +338,6 @@ function init() {
 function animate() {
     requestAnimationFrame( animate );    
     renderer.render(scene, currentCamera);
-} animate();
+} 
+
+//animate();
