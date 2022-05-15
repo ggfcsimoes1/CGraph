@@ -83,6 +83,7 @@ function createCones( x, y, z, radius, height, segs ) {
     cone = new THREE.Object3D ( );
     geometry = new THREE.ConeGeometry ( radius, height, segs );
     mesh = new THREE.Mesh ( geometry, coneMaterial );
+    cone.position.set(0, 0, 0)
     cone.add ( mesh );
     group.add ( cone );
     
@@ -94,7 +95,7 @@ function createCones( x, y, z, radius, height, segs ) {
     group.add ( sphere );
 
     group.position.set ( x, y, z );
-    //group.rotation.set ( 3.8, 0.40 , 0.35 );
+    group.rotation.set ( 0, 0 , 3*(Math.PI/4) );
 
     const axesHelper = new THREE.AxesHelper( 100 );
     
@@ -194,7 +195,7 @@ function createPyramid(x, y, z, radius, segs, height) {
 
 
     group.position.set ( x, y, z );
-    //group.rotation.set ( 3.8, 0.40 , 0.35 );
+    //group.rotation.set (0, 0.2, 0.2);
 
     const axesHelper = new THREE.AxesHelper( 100 );
     
@@ -207,9 +208,9 @@ function createScene() {
 
     scene = new THREE.Scene();
     
-    createBoxes( 300, 300, 0, 50 );
-    createCones( 100, 100, 0, 35, 200, 20 );
-    createSphere(-200, 80, 0, 50, 20);
+    createBoxes( 300, 50, 25, 50 );
+    createCones( 100, 100, -200, 35, 200, 20 );
+    createSphere(-200, 120, -100, 50, 20);
     createPyramid(-300, -250, 100, 50, 30, 450);
 
 }
