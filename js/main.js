@@ -225,29 +225,35 @@ function createPyramid(x, y, z, radius, segs, height) {
     scene.add ( group );
 }
 
-function rotateObjects(group, reverseDirection=false, articulate = false){
-    //'use strict'
+function rotateObjects(group, reverseDirection=false, articulate = false, isPyramid = false){
+    var neg;
+    var i=0;
+    reverseDirection ? neg = -1 : neg = 1;
     
-    if ( reverseDirection ){
-        if ( !articulate ){
-            group.rotateX(THREE.MathUtils.degToRad( -10 ));
-            group.rotateY(THREE.MathUtils.degToRad( -10 ));
-        } else {  
-            group.rotateY(THREE.MathUtils.degToRad( -10 ));              
-        }
-    } else {
-        if ( !articulate ){
-            group.rotateX(THREE.MathUtils.degToRad( 10 ));
-            group.rotateY(THREE.MathUtils.degToRad( 10 ));
+    if ( !articulate ){
+        if ( isPyramid ) {
+            group.traverse(function (node) {
+                if (node instanceof THREE.Mesh) {
+                    if (i==2 || i == 3){ //getting the pyramid meshes
+                        node.rotateX( THREE.MathUtils.degToRad( neg * 10 ) );
+                        node.rotateZ( THREE.MathUtils.degToRad( neg * 10 ) );
+                    }
+                    i++;
+                }
+            });
         } else {
-            group.rotateY(THREE.MathUtils.degToRad( 10 ));         
+            group.rotateX( THREE.MathUtils.degToRad( neg * 10 ) );
+            group.rotateY( THREE.MathUtils.degToRad( neg* 10 ) );
         }
+    } else {  
+        group.rotateY( THREE.MathUtils.degToRad( neg* 10 ) );              
     }
+
     
 }
 
 function moveObjects(node,direction){
-
+    'use strict'
     switch ( direction ) {
         case "up":
             node.position.y += 10;
@@ -351,12 +357,11 @@ function onResize() {
         currentCamera.bottom = window.innerHeight / -2;
         currentCamera.updateProjectionMatrix();
     }
-
 }
 
 function onKeyDown(e) {
     'use strict';
-    console.log(e);
+
     switch (e.keyCode) {
     case 49: //user pressed key 1, toggling normal view
         changePerspective("front");  
@@ -400,23 +405,27 @@ function onKeyDown(e) {
         break;
     case 37: //left arrow
         keys.leftArrow = true
+        console.log("Left arrow key press"); 
         break;
     case 38: //up arrow
         keys.upArrow = true
+        console.log("Up arrow key press"); 
         break;
     case 39: //right arrow
         keys.rightArrow = true
+        console.log("Right arrow key press"); 
         break;
     case 40: //down arrow
         keys.downArrow = true
+        console.log("Down arrow key press"); 
         break;  
     case 68: //d
         keys.D = true 
         console.log("D key press"); 
         break;
-
     case 67: //c
         keys.C = true
+        console.log("C key press"); 
         break;
     }
 }
@@ -427,27 +436,21 @@ function onKeyUp(e) {
     switch (e.keyCode) {
     case 81: //Q
         keys.Q = false;
-        console.log("Q key press");
         break;
     case 87: //W
         keys.W = false;
-        console.log("W key press");
         break;
     case 65: //A
         keys.A = false;
-        console.log("A key press");
         break;
     case 83: //S
         keys.S = false;
-        console.log("S key press");
         break;
     case 90: //Z
         keys.Z = false;
-        console.log("Z key press");
         break;
     case 88: //X
         keys.X = false;
-        console.log("X key press");
         break;
     case 37: //left arrow
         keys.leftArrow = false;
@@ -463,9 +466,7 @@ function onKeyUp(e) {
         break;  
     case 68: //d
         keys.D = false; 
-        console.log("D key press"); 
         break;
-
     case 67: //c
         keys.C = false;
         break;
@@ -483,29 +484,29 @@ function checkForMovements() {
     });
 
     if (keys.Q)
-        rotateObjects(articulateObj,false, true);
+        rotateObjects( articulateObj,false, true );
     if(keys.W)
-        rotateObjects(articulateObj,true, true);
+        rotateObjects( articulateObj,true, true );
     if ( keys.A )
-        rotateObjects(groupList[2]);
+        rotateObjects( groupList[2] );
     if ( keys.S )
-        rotateObjects(groupList[2],true);
+        rotateObjects( groupList[2], true );
     if ( keys.Z )
-        rotateObjects(groupList[3]);
+        rotateObjects( groupList[2], false, false, true );
     if ( keys.X )
-        rotateObjects(groupList[3],true);
+        rotateObjects( groupList[2], true, false, true );
     if ( keys.leftArrow )
-        moveObjects(articulateObj,"left");
+        moveObjects( articulateObj,"left" );
     if ( keys.rightArrow )
-        moveObjects(articulateObj,"right");
+        moveObjects( articulateObj,"right" );
     if ( keys.upArrow )
-        moveObjects(articulateObj,"up");
+        moveObjects( articulateObj,"up" );
     if ( keys.downArrow )
-        moveObjects(articulateObj,"down");
+        moveObjects( articulateObj,"down" );
     if ( keys.D )
-        moveObjects(articulateObj,"forward");
+        moveObjects( articulateObj,"forward" );
     if ( keys.C )
-        moveObjects(articulateObj,"backward");
+        moveObjects( articulateObj,"backward" );
 
 }
 
