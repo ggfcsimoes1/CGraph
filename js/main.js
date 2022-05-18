@@ -10,6 +10,11 @@ var box, pyramid, cone, sphere, torus;
 
 var colors = [0x0000FF,0x00FFFF,0xFF00FF,0xFFFF00, 0x00FF00];
 
+var articulateObj;
+
+var articulateObjCoords;
+
+var axis = [];
 
 function createBoxes( x, y, z, size ) {
     'use strict';
@@ -46,6 +51,7 @@ function createBoxes( x, y, z, size ) {
         box.position.set( xAux, yAux, 0 );
         box.add( mesh );
         group.add(box);
+        
     }
 
     sphere = new THREE.Object3D ( );
@@ -61,14 +67,13 @@ function createBoxes( x, y, z, size ) {
     const axesHelper = new THREE.AxesHelper( 100 );
 
     group.add( axesHelper );
-    scene.add(group);
+    scene.add(group);    
 }
 
 function createCones( x, y, z, radius, height, segs ) {
     'use strict';
     
-    const group = new THREE.Group ( );
-
+    articulateObj = new THREE.Group ( );
     const coneMaterial = new THREE.MeshBasicMaterial ( {color: colors[0], wireframe: false} );
     const sphereMaterial = new THREE.MeshBasicMaterial ( {color: colors[1], wireframe: false} );
     const pyramidMaterial = new THREE.MeshBasicMaterial ( {color: colors[2], wireframe: false} );
@@ -78,29 +83,32 @@ function createCones( x, y, z, radius, height, segs ) {
     mesh = new THREE.Mesh ( geometry, pyramidMaterial );
     pyramid.position.set ( 0, 125, 0 );
     pyramid.add ( mesh );
-    group.add ( pyramid );
+    articulateObj.add ( pyramid );
    
     cone = new THREE.Object3D ( );
     geometry = new THREE.ConeGeometry ( radius, height, segs );
     mesh = new THREE.Mesh ( geometry, coneMaterial );
     cone.position.set(0, 0, 0)
     cone.add ( mesh );
-    group.add ( cone );
+    articulateObj.add ( cone );
     
     sphere = new THREE.Object3D ( );
     geometry = new THREE.SphereGeometry ( radius, segs, segs );
     mesh = new THREE.Mesh ( geometry, sphereMaterial );
     sphere.position.set ( 0, -(height-30), 0 );
     sphere.add ( mesh );
-    group.add ( sphere );
+    articulateObj.add ( sphere );
 
-    group.position.set ( x, y, z );
-    group.rotation.set ( 0, 0 , 3*(Math.PI/4) );
+    createSphere(300, 0, 0, 50, 20);
+
+    articulateObj.position.set ( x, y, z );
+    articulateObj.rotateZ(THREE.MathUtils.degToRad(160));
 
     const axesHelper = new THREE.AxesHelper( 100 );
     
-    group.add( axesHelper );
-    scene.add ( group );
+    articulateObj.add( axesHelper );
+    scene.add ( articulateObj );
+    axis.push(new THREE.Vector3(articulateObj.position.x, articulateObj.position.y, articulateObj.position.z));
 }
 
 function createSphere(x, y, z, radius, segs ) {
@@ -143,12 +151,11 @@ function createSphere(x, y, z, radius, segs ) {
     group.add ( pyramid );
 
     group.position.set ( x, y, z );
-    //group.rotation.set ( 3.8, 0.40 , 0.35 );
 
     const axesHelper = new THREE.AxesHelper( 100 );
     
     group.add( axesHelper );
-    scene.add ( group );
+    articulateObj.add ( group );
 }
 
 function createPyramid(x, y, z, radius, segs, height) {
@@ -195,13 +202,58 @@ function createPyramid(x, y, z, radius, segs, height) {
 
 
     group.position.set ( x, y, z );
-    //group.rotation.set (0, 0.2, 0.2);
 
     const axesHelper = new THREE.AxesHelper( 100 );
     
     group.add( axesHelper );
     scene.add ( group );
 }
+
+function rotateObjects(group, reverseDirection=false, articulate = false){
+    //'use strict'
+    
+    if ( reverseDirection ){
+        if ( !articulate ){
+            group.rotateX(THREE.MathUtils.degToRad( -10 ));
+            group.rotateY(THREE.MathUtils.degToRad( -10 ));
+        } else {  
+            group.rotateY(THREE.MathUtils.degToRad( -10 ));              
+        }
+    } else {
+        if ( !articulate ){
+            group.rotateX(THREE.MathUtils.degToRad( 10 ));
+            group.rotateY(THREE.MathUtils.degToRad( 10 ));
+        } else {
+            group.rotateY(THREE.MathUtils.degToRad( 10 ));         
+        }
+    }
+    
+}
+
+function moveObjects(node,direction){
+
+    switch ( direction ) {
+        case "up":
+            node.position.y += 10;
+            break;
+        case "down":
+            node.position.y -= 10;
+            break;
+        case "left":
+            node.position.x -= 10;
+            break;
+        case "right":
+            node.position.x += 10;
+            break;
+        case "forward":
+            node.position.z += 10;
+            break;
+        case "backward":
+            node.position.z -= 10;
+            break;
+    } 
+}
+
 
 function createScene() {
     'use strict';
@@ -210,7 +262,6 @@ function createScene() {
     
     createBoxes( 300, 50, 25, 50 );
     createCones( 100, 100, -200, 35, 200, 20 );
-    createSphere(-200, 120, -100, 50, 20);
     createPyramid(-300, -250, 100, 50, 30, 450);
 
 }
@@ -289,6 +340,12 @@ function onResize() {
 
 function onKeyDown(e) {
     'use strict';
+    var groupList = [];
+    scene.traverse(function (node) {
+        if (node instanceof THREE.Group) {
+            groupList.push(node);
+        }
+    });
 
     switch (e.keyCode) {
     case 49: //user pressed key 1, toggling normal view
@@ -306,6 +363,50 @@ function onKeyDown(e) {
     case 52:
         toggleWireframe();
         console.log("wireframe view");
+        break;
+    case 81: //Q
+        rotateObjects(articulateObj,false, true);
+        console.log("Q key press");
+        break;
+    case 87: //W
+        rotateObjects(articulateObj,true, true);
+        console.log("W key press");
+        break;
+    case 65: //A
+        rotateObjects(groupList[2]);
+        console.log("A key press");
+        break;
+    case 83: //S
+        rotateObjects(groupList[2],true);
+        console.log("S key press");
+        break;
+    case 90: //Z
+        rotateObjects(groupList[3]);
+        console.log("Z key press");
+        break;
+    case 88: //X
+        rotateObjects(groupList[3],true);
+        console.log("X key press");
+        break;
+    case 37: //left arrow
+        moveObjects(articulateObj,"left");
+        break;
+    case 38: //up arrow
+        moveObjects(articulateObj,"up");
+        break;
+    case 39: //right arrow
+        moveObjects(articulateObj,"right");
+        break;
+    case 40: //down arrow
+        moveObjects(articulateObj,"down");
+        break;  
+    case 68: //d
+        moveObjects(articulateObj,"forward");  
+        console.log("D key press"); 
+        break;
+
+    case 67: //c
+        moveObjects(articulateObj,"backward");
         break;
     }
 }
