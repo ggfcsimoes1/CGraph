@@ -16,6 +16,22 @@ var articulateObjCoords;
 
 var axis = [];
 
+let keys = {
+    Q : false,
+    W : false,
+    A : false,
+    S : false,
+    Z : false,
+    X : false,
+    C : false,
+    D : false,
+    leftArrow : false,
+    rightArrow : false,
+    upArrow : false,
+    downArrow : false
+    
+}
+
 function createBoxes( x, y, z, size ) {
     'use strict';
 
@@ -340,12 +356,6 @@ function onResize() {
 
 function onKeyDown(e) {
     'use strict';
-    var groupList = [];
-    scene.traverse(function (node) {
-        if (node instanceof THREE.Group) {
-            groupList.push(node);
-        }
-    });
 
     switch (e.keyCode) {
     case 49: //user pressed key 1, toggling normal view
@@ -365,50 +375,138 @@ function onKeyDown(e) {
         console.log("wireframe view");
         break;
     case 81: //Q
-        rotateObjects(articulateObj,false, true);
+        keys.Q = true
         console.log("Q key press");
         break;
     case 87: //W
-        rotateObjects(articulateObj,true, true);
+        keys.W = true
         console.log("W key press");
         break;
     case 65: //A
-        rotateObjects(groupList[2]);
+        keys.A = true
         console.log("A key press");
         break;
     case 83: //S
-        rotateObjects(groupList[2],true);
+        keys.S = true
         console.log("S key press");
         break;
     case 90: //Z
-        rotateObjects(groupList[3]);
+        keys.Z = true
         console.log("Z key press");
         break;
     case 88: //X
-        rotateObjects(groupList[3],true);
+        keys.X = true
         console.log("X key press");
         break;
     case 37: //left arrow
-        moveObjects(articulateObj,"left");
+        keys.leftArrow = true
         break;
     case 38: //up arrow
-        moveObjects(articulateObj,"up");
+        keys.upArrow = true
         break;
     case 39: //right arrow
-        moveObjects(articulateObj,"right");
+        keys.rightArrow = true
         break;
     case 40: //down arrow
-        moveObjects(articulateObj,"down");
+        keys.downArrow = true
         break;  
     case 68: //d
-        moveObjects(articulateObj,"forward");  
+        keys.D = true 
         console.log("D key press"); 
         break;
 
     case 67: //c
-        moveObjects(articulateObj,"backward");
+        keys.C = true
         break;
     }
+}
+
+function onKeyUp(e) {
+    'use strict';
+
+    switch (e.keyCode) {
+    case 81: //Q
+        keys.Q = false;
+        console.log("Q key press");
+        break;
+    case 87: //W
+        keys.W = false;
+        console.log("W key press");
+        break;
+    case 65: //A
+        keys.A = false;
+        console.log("A key press");
+        break;
+    case 83: //S
+        keys.S = false;
+        console.log("S key press");
+        break;
+    case 90: //Z
+        keys.Z = false;
+        console.log("Z key press");
+        break;
+    case 88: //X
+        keys.X = false;
+        console.log("X key press");
+        break;
+    case 37: //left arrow
+        keys.leftArrow = false;
+        break;
+    case 38: //up arrow
+        keys.upArrow = false;
+        break;
+    case 39: //right arrow
+        keys.rightArrow = false;
+        break;
+    case 40: //down arrow
+        keys.downArrow = false;
+        break;  
+    case 68: //d
+        keys.D = false; 
+        console.log("D key press"); 
+        break;
+
+    case 67: //c
+        keys.C = false;
+        break;
+    }
+}
+
+function checkForMovements() {
+    'use strict';
+
+    var groupList = [];
+    scene.traverse(function (node) {
+        if (node instanceof THREE.Group) {
+            groupList.push(node);
+        }
+    });
+
+    if (keys.Q)
+        rotateObjects(articulateObj,false, true);
+    else if(keys.W)
+        rotateObjects(articulateObj,true, true);
+    else if ( keys.A )
+        rotateObjects(groupList[2]);
+    else if ( keys.S )
+        rotateObjects(groupList[2],true);
+    else if ( keys.Z )
+        rotateObjects(groupList[3]);
+    else if ( keys.X )
+        rotateObjects(groupList[3],true);
+    else if ( keys.leftArrow )
+        moveObjects(articulateObj,"left");
+    else if ( keys.rightArrow )
+        moveObjects(articulateObj,"right");
+    else if ( keys.upArrow )
+        moveObjects(articulateObj,"up");
+    else if ( keys.downArrow )
+        moveObjects(articulateObj,"down");
+    else if ( keys.D )
+        moveObjects(articulateObj,"forward");
+    else if ( keys.C )
+        moveObjects(articulateObj,"backward");
+
 }
 
 function render() {
@@ -434,12 +532,14 @@ function init() {
     render();
 
     window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
     window.addEventListener("resize", onResize);
 }
 
 function animate() {
     requestAnimationFrame( animate );    
     render();
+    checkForMovements();
 } 
 
 //animate();
