@@ -356,7 +356,7 @@ function onResize() {
 
 function onKeyDown(e) {
     'use strict';
-
+    console.log(e);
     switch (e.keyCode) {
     case 49: //user pressed key 1, toggling normal view
         changePerspective("front");  
@@ -484,27 +484,27 @@ function checkForMovements() {
 
     if (keys.Q)
         rotateObjects(articulateObj,false, true);
-    else if(keys.W)
+    if(keys.W)
         rotateObjects(articulateObj,true, true);
-    else if ( keys.A )
+    if ( keys.A )
         rotateObjects(groupList[2]);
-    else if ( keys.S )
+    if ( keys.S )
         rotateObjects(groupList[2],true);
-    else if ( keys.Z )
+    if ( keys.Z )
         rotateObjects(groupList[3]);
-    else if ( keys.X )
+    if ( keys.X )
         rotateObjects(groupList[3],true);
-    else if ( keys.leftArrow )
+    if ( keys.leftArrow )
         moveObjects(articulateObj,"left");
-    else if ( keys.rightArrow )
+    if ( keys.rightArrow )
         moveObjects(articulateObj,"right");
-    else if ( keys.upArrow )
+    if ( keys.upArrow )
         moveObjects(articulateObj,"up");
-    else if ( keys.downArrow )
+    if ( keys.downArrow )
         moveObjects(articulateObj,"down");
-    else if ( keys.D )
+    if ( keys.D )
         moveObjects(articulateObj,"forward");
-    else if ( keys.C )
+    if ( keys.C )
         moveObjects(articulateObj,"backward");
 
 }
