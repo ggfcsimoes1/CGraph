@@ -8,6 +8,7 @@ var geometry, material, mesh;
 
 var box, pyramid, cone, sphere, torus;
 
+//colors that will be used in the materials
 var colors = [0x0000FF,0x00FFFF,0xFF00FF,0xFFFF00, 0x00FF00];
 
 var articulateObj;
@@ -16,6 +17,8 @@ var articulateObjCoords;
 
 var axis = [];
 
+//auxiliary object that holds the pressed 
+//status of every key used in the program
 let keys = {
     Q : false,
     W : false,
@@ -29,199 +32,111 @@ let keys = {
     rightArrow : false,
     upArrow : false,
     downArrow : false
-    
 }
 
-function createBoxes( x, y, z, size ) {
+function createObject0( x, y, z, size ) {
     'use strict';
 
-    const group = new THREE.Group();
+    const group = new THREE.Group ( );
     
-    const sphereMaterial = new THREE.MeshBasicMaterial ( {color: colors[1], wireframe: false} );
-
-    for( var i = 0; i < 5; i++ ){
+    for ( var i = 0; i < 5; i++ ) {
         var xAux = 0, yAux = 0;
 
-        material = new THREE.MeshBasicMaterial({ color: colors[i], wireframe: false });
-        box = new THREE.Object3D();
-        geometry = new THREE.BoxGeometry( size, size, size );
-        mesh = new THREE.Mesh( geometry, material );
-
-        switch(i){
+        switch ( i ){
             case 0:
-                xAux = (size+10);
+                xAux = ( size+10 );
                 break;
             case 1:
-                yAux = -(size+10);
+                yAux = -( size+10 );
                 break;
             case 2:
                 break;
             case 3:
-                yAux = (size+10)
+                yAux = ( size+10 );
                 break;
             case 4:
-                xAux = -(size+10);
+                xAux = -( size+10 );
                 break;
         }
         
-        box.position.set( xAux, yAux, 0 );
-        box.add( mesh );
-        group.add(box);
+        box = new Box(xAux, yAux, 0, size, size, size, colors[i]);
+        group.add ( box.getObj3D() );
         
     }
 
-    sphere = new THREE.Object3D ( );
-    geometry = new THREE.SphereGeometry ( size/4, 20, 7 );
-    mesh = new THREE.Mesh ( geometry, sphereMaterial );
-    sphere.position.set ( -(size*3/2 + 10), -size/2, size/2 );
-    sphere.add ( mesh );
-    group.add ( sphere );
+    sphere = new Sphere ( -(size*3/2 + 10), -size/2, size/2, size/4, 20, 7, colors[1] );
+    group.add ( sphere.getObj3D() );
 
     group.position.set ( x, y, z );
-    //group.rotation.set(-10,-10,0);
 
-    const axesHelper = new THREE.AxesHelper( 100 );
-
-    group.add( axesHelper );
     scene.add(group);    
 }
 
-function createCones( x, y, z, radius, height, segs ) {
+function createObject1( x, y, z, radius, height, segs ) {
     'use strict';
     
     articulateObj = new THREE.Group ( );
-    const coneMaterial = new THREE.MeshBasicMaterial ( {color: colors[0], wireframe: false} );
-    const sphereMaterial = new THREE.MeshBasicMaterial ( {color: colors[1], wireframe: false} );
-    const pyramidMaterial = new THREE.MeshBasicMaterial ( {color: colors[2], wireframe: false} );
 
-    pyramid = new THREE.Object3D ( );
-    geometry = new THREE.ConeGeometry ( radius/2, height/4, 4 );
-    mesh = new THREE.Mesh ( geometry, pyramidMaterial );
-    pyramid.position.set ( 0, 125, 0 );
-    pyramid.add ( mesh );
-    articulateObj.add ( pyramid );
-   
-    cone = new THREE.Object3D ( );
-    geometry = new THREE.ConeGeometry ( radius, height, segs );
-    mesh = new THREE.Mesh ( geometry, coneMaterial );
-    cone.position.set(0, 0, 0)
-    cone.add ( mesh );
-    articulateObj.add ( cone );
+    pyramid = new Cone( 0, 125, 0, radius/2, height/4, 4, colors[2] );
+    articulateObj.add ( pyramid.getObj3D() );
+
+    cone = new Cone( 0, 0, 0, radius, height, segs, colors[0] );
+    articulateObj.add ( cone.getObj3D() );
     
-    sphere = new THREE.Object3D ( );
-    geometry = new THREE.SphereGeometry ( radius, segs, segs );
-    mesh = new THREE.Mesh ( geometry, sphereMaterial );
-    sphere.position.set ( 0, -(height-30), 0 );
-    sphere.add ( mesh );
-    articulateObj.add ( sphere );
+    sphere = new Sphere ( 0, - ( height - 30 ), 0,radius, segs, segs, colors[1] );
+    articulateObj.add ( sphere.getObj3D() )
+    
 
-    createSphere(300, 0, 0, 50, 20);
+    createObject2(300, 0, 0, 50, 20);
 
     articulateObj.position.set ( x, y, z );
     articulateObj.rotateZ(THREE.MathUtils.degToRad(160));
 
-    const axesHelper = new THREE.AxesHelper( 100 );
-    
-    articulateObj.add( axesHelper );
     scene.add ( articulateObj );
     axis.push(new THREE.Vector3(articulateObj.position.x, articulateObj.position.y, articulateObj.position.z));
 }
 
-function createSphere(x, y, z, radius, segs ) {
+function createObject2(x, y, z, radius, segs ) {
     'use strict';
 
     const group = new THREE.Group ( );
 
-    const sphereMaterial = new THREE.MeshBasicMaterial ( {color: colors[3], wireframe: false} );
-    const rectangleMaterial = new THREE.MeshBasicMaterial ( {color: colors[1], wireframe: false} );
-    const pyramid1Material = new THREE.MeshBasicMaterial ( {color: colors[2], wireframe: false} );
-    const pyramid2Material = new THREE.MeshBasicMaterial ( {color: colors[2], wireframe: false} );
+    sphere = new Sphere ( 0, 0, 0,radius, segs, segs, colors[3] );
+    group.add ( sphere.getObj3D() );
 
-    sphere = new THREE.Object3D ( );
-    geometry = new THREE.SphereGeometry ( radius, segs, segs );
-    mesh = new THREE.Mesh ( geometry, sphereMaterial );
-    sphere.position.set ( 0, 0, 0 );
-    sphere.add ( mesh );
-    group.add ( sphere );
+    box = new Box ( 0, 0, 0, 3/2 * radius, 3.5 * radius, 20, colors[1], 0.5, 0, 0 );
+    group.add( box.getObj3D() );
 
-    box = new THREE.Object3D();
-    geometry = new THREE.BoxGeometry( 3/2 * radius, 3.5 * radius, 20);
-    mesh = new THREE.Mesh( geometry, rectangleMaterial);
-    box.position.set(0, 0, 0);
-    box.rotation.set(0.5, 0, 0);
-    box.add( mesh );
-    group.add( box );
+    pyramid = new Cone( 100, 0, 0, radius/3, radius/2, 4, colors[2] );
+    group.add ( pyramid.getObj3D() );
 
-    pyramid = new THREE.Object3D ( );
-    geometry = new THREE.ConeGeometry ( radius/3, radius/2, 4 );
-    mesh = new THREE.Mesh ( geometry, pyramid1Material );
-    pyramid.position.set ( 100, 0, 0 );
-    pyramid.add ( mesh );
-    group.add ( pyramid );
-
-    pyramid = new THREE.Object3D ( );
-    geometry = new THREE.ConeGeometry ( radius/3, -radius/2, 4 );
-    mesh = new THREE.Mesh ( geometry, pyramid2Material );
-    pyramid.position.set ( -100, 0, 0 );
-    pyramid.add ( mesh );
-    group.add ( pyramid );
+    pyramid = new Cone( -100, 0, 0, radius/3, -radius/2, 4, colors[2] );
+    group.add ( pyramid.getObj3D() );
 
     group.position.set ( x, y, z );
-
-    const axesHelper = new THREE.AxesHelper( 100 );
-    
-    group.add( axesHelper );
     articulateObj.add ( group );
 }
 
-function createPyramid(x, y, z, radius, segs, height) {
+function createObject3(x, y, z, radius, segs, height) {
     'use strict';
 
     const group = new THREE.Group ( );
 
-    const torus1Material = new THREE.MeshBasicMaterial ( {color: colors[3], wireframe: false} );
-    const torus2Material = new THREE.MeshBasicMaterial ( {color: colors[0], wireframe: false} );
-    const rectangleMaterial = new THREE.MeshBasicMaterial ( {color: colors[1], wireframe: false} );
-    const pyramidMaterial = new THREE.MeshBasicMaterial ( {color: colors[2], wireframe: false} );
+    pyramid = new Cone( 0, 0, 0, height/13, height, 4, colors[2], THREE.MathUtils.degToRad(45), 0, THREE.MathUtils.degToRad(-90) );
+    group.add ( pyramid.getObj3D() );
 
-    pyramid = new THREE.Object3D ( );
-    geometry = new THREE.ConeGeometry ( height/13, height, 4 );
-    mesh = new THREE.Mesh ( geometry, pyramidMaterial );
-    pyramid.position.set ( 0, 0, 0 );
-    pyramid.rotation.set( Math.PI/4, 0, -Math.PI/2 );
-    pyramid.add ( mesh );
-    group.add ( pyramid );
+    torus = new Torus( 40, 0, 0, radius*1.5, radius/5, segs, segs, colors[3], 0, THREE.MathUtils.degToRad(-90), 0 );
+    group.add ( torus.getObj3D() );
 
-    torus = new THREE.Object3D ( );
-    geometry = new THREE.TorusGeometry ( radius*1.5, radius/5, segs, segs );
-    mesh = new THREE.Mesh ( geometry, torus1Material );
-    torus.position.set ( 40, 0, 0 );
-    torus.rotation.set( 0, -Math.PI/2, 0);
-    torus.add ( mesh );
-    group.add ( torus );
+    torus = new Torus( 110, 0, 0, radius, radius/5, segs, segs, colors[0], 0, THREE.MathUtils.degToRad(-90), 0 );
+    group.add ( torus.getObj3D() );
 
-    torus = new THREE.Object3D ( );
-    geometry = new THREE.TorusGeometry ( radius, radius/5, segs, segs );
-    mesh = new THREE.Mesh ( geometry, torus2Material );
-    torus.position.set ( 110, 0, 0 );
-    torus.rotation.set( 0, -Math.PI/2, 0);
-    torus.add ( mesh );
-    group.add ( torus );
 
-    box = new THREE.Object3D();
-    geometry = new THREE.BoxGeometry( height/15, height/15, height/15);
-    mesh = new THREE.Mesh( geometry, rectangleMaterial);
-    box.position.set(-height/2, height/13 , 0);
-    box.rotation.set(0 , 0, Math.PI/4);
-    box.add( mesh );
-    group.add( box );
-
+    box = new Box ( -height/2, height/13, 0, height/15, height/15, height/15, colors[1], 0, 0, THREE.MathUtils.degToRad(45) );
+    group.add( box.getObj3D() );
 
     group.position.set ( x, y, z );
 
-    const axesHelper = new THREE.AxesHelper( 100 );
-    
-    group.add( axesHelper );
     scene.add ( group );
 }
 
@@ -282,9 +197,9 @@ function createScene() {
 
     scene = new THREE.Scene();
     
-    createBoxes( 300, 50, 25, 50 );
-    createCones( 100, 100, -200, 35, 200, 20 );
-    createPyramid(-300, -250, 100, 50, 30, 450);
+    createObject0( 300, 50, 25, 50 );
+    createObject1( 100, 100, -200, 35, 200, 20 );
+    createObject3(-300, -250, 100, 50, 30, 450);
 
 }
 
@@ -527,9 +442,6 @@ function init() {
     createScene();
     createCamera();
 
-    const axesHelper = new THREE.AxesHelper( 200 );
-    scene.add( axesHelper );
-
     render();
 
     window.addEventListener("keydown", onKeyDown);
@@ -541,6 +453,4 @@ function animate() {
     requestAnimationFrame( animate );    
     render();
     checkForMovements();
-} 
-
-//animate();
+}
