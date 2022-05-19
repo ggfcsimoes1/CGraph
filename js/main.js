@@ -162,7 +162,6 @@ function rotateObjects(group, clock_delta, reverseDirection=false, articulate = 
             group.traverse(function (node) {
                 if (node instanceof THREE.Mesh) {
                     if (i==2 || i == 3){ //getting the pyramid meshes
-                        node.rotateX( THREE.MathUtils.degToRad( value ));
                         node.rotateZ( THREE.MathUtils.degToRad( value ) );
                     }
                     i++;
