@@ -2,6 +2,7 @@
 
 var cameras = [];
 
+//Clock creation
 var clock = new THREE.Clock();
 
 var scene, renderer, currentCamera;
@@ -10,7 +11,8 @@ var geometry, material, mesh;
 
 var box, pyramid, cone, sphere, torus;
 
-//colors that will be used in the materials
+/*Colors that will be used in the materials
+Respectevely, blue, cyan, magenta, yellow, green*/
 var colors = [0x0000FF,0x00FFFF,0xFF00FF,0xFFFF00, 0x00FF00];
 
 var articulateObj;
@@ -36,11 +38,13 @@ let keys = {
     downArrow : false
 }
 
+/*Creates four cubes and a sphere*/
 function createObject0( x, y, z, size ) {
     'use strict';
 
     const group = new THREE.Group ( );
     
+    //For cycle, which creates 4 box varying the x and y coordenates
     for ( var i = 0; i < 5; i++ ) {
         var xAux = 0, yAux = 0;
 
@@ -74,6 +78,7 @@ function createObject0( x, y, z, size ) {
     scene.add(group);    
 }
 
+/* Creates a pyramid, cone and sphere, they are added in the articulated object */
 function createObject1( x, y, z, radius, height, segs ) {
     'use strict';
     
@@ -95,9 +100,12 @@ function createObject1( x, y, z, radius, height, segs ) {
     articulateObj.rotateZ(THREE.MathUtils.degToRad(160));
 
     scene.add ( articulateObj );
+
+    //Add a new axis acording the coordenatates of the articuated object
     axis.push(new THREE.Vector3(articulateObj.position.x, articulateObj.position.y, articulateObj.position.z));
 }
 
+/*Creates two cones, sphere and a parallelpiped, added in the articulated object*/
 function createObject2(x, y, z, radius, segs ) {
     'use strict';
 
@@ -119,6 +127,7 @@ function createObject2(x, y, z, radius, segs ) {
     articulateObj.add ( group );
 }
 
+/*Create a pyramid and two torus*/
 function createObject3(x, y, z, radius, segs, height) {
     'use strict';
 
@@ -142,6 +151,7 @@ function createObject3(x, y, z, radius, segs, height) {
     scene.add ( group );
 }
 
+/*Function responsable for rotating objects of the group*/
 function rotateObjects(group, clock_delta, reverseDirection=false, articulate = false, isPyramid = false){
     var value;
     var i=0;
@@ -169,6 +179,7 @@ function rotateObjects(group, clock_delta, reverseDirection=false, articulate = 
     
 }
 
+/*Function responsable for translation movemenets*/
 function moveObjects(node,direction){
     'use strict'
     switch ( direction ) {
@@ -193,7 +204,7 @@ function moveObjects(node,direction){
     } 
 }
 
-
+/*Function responsabe for create all the objects and scene*/
 function createScene() {
     'use strict';
 
@@ -205,6 +216,7 @@ function createScene() {
 
 }
 
+/*Function responsable for create the 3 camaras*/
 function createCamera() {
     'use strict';
 
@@ -218,12 +230,15 @@ function createCamera() {
         
         switch( i ){
             case 0:
+                //Frontal camara
                 camera.position.set( 0, 0, 1000 );
                 break;
             case 1:
+                //Top camera
                 camera.position.set( 0, 1000, 0 );
                 break;
             case 2: 
+                //Side camara
                 camera.position.set( 1000, 0, 0);
                 break;
         }
@@ -234,6 +249,7 @@ function createCamera() {
     
 }
 
+/*Function that handles the change of the camera*/
 function changePerspective(view){
     'use strict';
     switch(view){
@@ -253,6 +269,7 @@ function changePerspective(view){
 
 }
 
+/*Function responsable for toggle the wireframe*/
 function toggleWireframe(){
     'use strict'
     scene.traverse(function (node) {
@@ -261,6 +278,7 @@ function toggleWireframe(){
         }
     });
 }
+
 
 function onResize() {
     'use strict';
@@ -276,6 +294,7 @@ function onResize() {
     }
 }
 
+/*Detect if the following keys are down*/
 function onKeyDown(e) {
     'use strict';
 
@@ -347,6 +366,7 @@ function onKeyDown(e) {
     }
 }
 
+/*Detect if the following keys are down*/
 function onKeyUp(e) {
     'use strict';
 
@@ -390,9 +410,11 @@ function onKeyUp(e) {
     }
 }
 
+/*Function responsable for managing the movements*/
 function checkForMovements() {
     'use strict';
 
+    //Get current time
     var delta = clock.getDelta();
 
     var groupList = [];
@@ -402,9 +424,9 @@ function checkForMovements() {
         }
     });
 
-    if (keys.Q)
+    if ( keys.Q )
         rotateObjects( articulateObj, delta, false, true );
-    if(keys.W)
+    if ( keys.W )
         rotateObjects( articulateObj, delta, true, true );
     if ( keys.A )
         rotateObjects( groupList[2], delta );
@@ -434,6 +456,7 @@ function render() {
     renderer.render(scene, currentCamera);
 }
 
+/*Main program*/
 function init() {
     'use strict';
     renderer = new THREE.WebGLRenderer({
@@ -453,6 +476,7 @@ function init() {
     window.addEventListener("resize", onResize);
 }
 
+/*Function responsable for animation effects*/
 function animate() {
     requestAnimationFrame( animate );    
     render();
