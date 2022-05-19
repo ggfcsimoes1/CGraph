@@ -1,4 +1,4 @@
-# RC Project 2021-2022
+# CG Project 2021-2022
 ## Cloning instructions:
 
 Since the repo is currently private, cloning it doesn't follow the usual formula.
