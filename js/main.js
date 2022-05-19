@@ -179,7 +179,7 @@ function rotateObjects(group, clock_delta, reverseDirection=false, articulate = 
     
 }
 
-/*Function responsible for translation movemenets*/
+/*Function responsible for translation movements*/
 function moveObjects(node,direction){
     'use strict'
     switch ( direction ) {
@@ -279,7 +279,7 @@ function toggleWireframe(){
     });
 }
 
-/*Event occurs when the brower window has been resized*/
+/*Event occurs when the browser window has been resized*/
 function onResize() {
     'use strict';
     
