@@ -2,6 +2,8 @@
 
 var cameras = [];
 
+var clock = new THREE.Clock();
+
 var scene, renderer, currentCamera;
 
 var geometry, material, mesh;
@@ -140,28 +142,28 @@ function createObject3(x, y, z, radius, segs, height) {
     scene.add ( group );
 }
 
-function rotateObjects(group, reverseDirection=false, articulate = false, isPyramid = false){
-    var neg;
+function rotateObjects(group, clock_delta, reverseDirection=false, articulate = false, isPyramid = false){
+    var value;
     var i=0;
-    reverseDirection ? neg = -1 : neg = 1;
+    value =  reverseDirection ? -70 * clock_delta : 70 * clock_delta;
     
     if ( !articulate ){
         if ( isPyramid ) {
             group.traverse(function (node) {
                 if (node instanceof THREE.Mesh) {
                     if (i==2 || i == 3){ //getting the pyramid meshes
-                        node.rotateX( THREE.MathUtils.degToRad( neg * 10 ) );
-                        node.rotateZ( THREE.MathUtils.degToRad( neg * 10 ) );
+                        node.rotateX( THREE.MathUtils.degToRad( value ));
+                        node.rotateZ( THREE.MathUtils.degToRad( value ) );
                     }
                     i++;
                 }
             });
         } else {
-            group.rotateX( THREE.MathUtils.degToRad( neg * 10 ) );
-            group.rotateY( THREE.MathUtils.degToRad( neg* 10 ) );
+            group.rotateX( THREE.MathUtils.degToRad( value ) );
+            group.rotateY( THREE.MathUtils.degToRad( value ) );
         }
     } else {  
-        group.rotateY( THREE.MathUtils.degToRad( neg* 10 ) );              
+        group.rotateY( THREE.MathUtils.degToRad( value ) );
     }
 
     
@@ -391,6 +393,8 @@ function onKeyUp(e) {
 function checkForMovements() {
     'use strict';
 
+    var delta = clock.getDelta();
+
     var groupList = [];
     scene.traverse(function (node) {
         if (node instanceof THREE.Group) {
@@ -399,17 +403,17 @@ function checkForMovements() {
     });
 
     if (keys.Q)
-        rotateObjects( articulateObj,false, true );
+        rotateObjects( articulateObj, delta, false, true );
     if(keys.W)
-        rotateObjects( articulateObj,true, true );
+        rotateObjects( articulateObj, delta, true, true );
     if ( keys.A )
-        rotateObjects( groupList[2] );
+        rotateObjects( groupList[2], delta );
     if ( keys.S )
-        rotateObjects( groupList[2], true );
+        rotateObjects( groupList[2], delta , true );
     if ( keys.Z )
-        rotateObjects( groupList[2], false, false, true );
+        rotateObjects( groupList[2], delta , false, false, true );
     if ( keys.X )
-        rotateObjects( groupList[2], true, false, true );
+        rotateObjects( groupList[2], delta , true, false, true );
     if ( keys.leftArrow )
         moveObjects( articulateObj,"left" );
     if ( keys.rightArrow )
