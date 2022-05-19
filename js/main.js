@@ -12,7 +12,7 @@ var geometry, material, mesh;
 var box, pyramid, cone, sphere, torus;
 
 /*Colors that will be used in the materials
-Respectevely, blue, cyan, magenta, yellow, green*/
+Respectively, blue, cyan, magenta, yellow, green*/
 var colors = [0x0000FF,0x00FFFF,0xFF00FF,0xFFFF00, 0x00FF00];
 
 var articulateObj;
@@ -44,7 +44,7 @@ function createObject0( x, y, z, size ) {
 
     const group = new THREE.Group ( );
     
-    //For cycle, which creates 4 box varying the x and y coordenates
+    //For cycle, which creates four cubes varying the x and y coordinates
     for ( var i = 0; i < 5; i++ ) {
         var xAux = 0, yAux = 0;
 
@@ -101,7 +101,7 @@ function createObject1( x, y, z, radius, height, segs ) {
 
     scene.add ( articulateObj );
 
-    //Add a new axis acording the coordenatates of the articuated object
+    //Add a new axis acording to the coordinates of the articulated object
     axis.push(new THREE.Vector3(articulateObj.position.x, articulateObj.position.y, articulateObj.position.z));
 }
 
@@ -151,7 +151,7 @@ function createObject3(x, y, z, radius, segs, height) {
     scene.add ( group );
 }
 
-/*Function responsable for rotating objects of the group*/
+/*Function responsible for rotating objects of the group*/
 function rotateObjects(group, clock_delta, reverseDirection=false, articulate = false, isPyramid = false){
     var value;
     var i=0;
@@ -179,7 +179,7 @@ function rotateObjects(group, clock_delta, reverseDirection=false, articulate = 
     
 }
 
-/*Function responsable for translation movemenets*/
+/*Function responsible for translation movemenets*/
 function moveObjects(node,direction){
     'use strict'
     switch ( direction ) {
@@ -204,7 +204,7 @@ function moveObjects(node,direction){
     } 
 }
 
-/*Function responsabe for create all the objects and scene*/
+/*Function responsible for create all the objects and scene*/
 function createScene() {
     'use strict';
 
@@ -216,7 +216,7 @@ function createScene() {
 
 }
 
-/*Function responsable for create the 3 camaras*/
+/*Function responsible for changing the position of the camera*/
 function createCamera() {
     'use strict';
 
@@ -230,7 +230,7 @@ function createCamera() {
         
         switch( i ){
             case 0:
-                //Frontal camara
+                //Frontal camera
                 camera.position.set( 0, 0, 1000 );
                 break;
             case 1:
@@ -238,7 +238,7 @@ function createCamera() {
                 camera.position.set( 0, 1000, 0 );
                 break;
             case 2: 
-                //Side camara
+                //Side camera
                 camera.position.set( 1000, 0, 0);
                 break;
         }
@@ -269,7 +269,7 @@ function changePerspective(view){
 
 }
 
-/*Function responsable for toggle the wireframe*/
+/*Function responsible for toggle the wireframe*/
 function toggleWireframe(){
     'use strict'
     scene.traverse(function (node) {
@@ -279,7 +279,7 @@ function toggleWireframe(){
     });
 }
 
-
+/*Event occurs when the brower window has been resized*/
 function onResize() {
     'use strict';
     
@@ -366,7 +366,7 @@ function onKeyDown(e) {
     }
 }
 
-/*Detect if the following keys are down*/
+/*Detect if the following keys are up*/
 function onKeyUp(e) {
     'use strict';
 
@@ -410,7 +410,7 @@ function onKeyUp(e) {
     }
 }
 
-/*Function responsable for managing the movements*/
+/*Function responsible for managing the movements*/
 function checkForMovements() {
     'use strict';
 
@@ -451,6 +451,7 @@ function checkForMovements() {
 
 }
 
+/*Shows the output in the browser according to the camera*/
 function render() {
     'use strict';
     renderer.render(scene, currentCamera);
@@ -476,7 +477,7 @@ function init() {
     window.addEventListener("resize", onResize);
 }
 
-/*Function responsable for animation effects*/
+/*Function responsible for animation effects*/
 function animate() {
     requestAnimationFrame( animate );    
     render();
